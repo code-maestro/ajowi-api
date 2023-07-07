@@ -6,7 +6,7 @@ const getGuides = (req, res) => {
 
   try {
 
-    connection.query(`SELECT * FROM tour_guide`, function (error, results, fields) {
+    connection.query(`SELECT * FROM tour_guide ORDER BY RAND();`, function (error, results, fields) {
 
       if (error) {
 

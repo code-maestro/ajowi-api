@@ -4,7 +4,7 @@ const connection = require("../config/db");
 
 const getActivities = (req, res) => {
 
-  connection.query(`SELECT * FROM tour_activities`, function (error, results, fields) {
+  connection.query(`SELECT * FROM tour_activities ORDER BY RAND();`, function (error, results, fields) {
 
     if (error) {
 
@@ -21,26 +21,35 @@ const getActivities = (req, res) => {
 };
 
 
+
 const getActivity = (req, res) => {
+  
+  try {
 
-  connection.query(`SELECT * FROM tour_activities WHERE tour_guide_id = '${req.body.tour_guide_id}';`, function (error, results, fields) {
+    connection.query(`SELECT * FROM tour_activities WHERE activity_id = '${req.params.activityID}';`, function (error, results, fields) {
 
-    if (error) {
+      if (error) {
 
-      return res.status(500).send({ status: "FAILED", message: "SERVER ERROR", data: error.message });
+        return res.status(500).send({ status: "FAILED", message: "SERVER ERROR", data: error.message });
 
-    } else {
+      } else {
 
-      res.status(201).send({ status: "OK", message: "POST COMMENT SAVED", data: results });
+        res.status(201).send({ status: "OK", message: "POST COMMENT SAVED", data: results });
 
-    }
+      }
 
-  });
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
 
 };
 
 
-// USER REGISTRATION CONTROLLER
+
 const createActivity = async (req, res) => {
 
   var activity = req.body;
@@ -73,7 +82,7 @@ const createActivity = async (req, res) => {
 };
 
 
-// TOUR GUIDE UPDATE CONTROLLER
+
 const updateActivity = async (req, res) => {
 
   var activity = req.body;
@@ -81,7 +90,7 @@ const updateActivity = async (req, res) => {
 
   try {
 
-    connection.query(`UPDATE tour_activities SET title = '${activity.title}', description = '${activity.desc}', fee_per_hour = '${activity.fee_per_hour}', media_url = '${activity.media_url}' WHERE activity_id = '${activity.activity_id}'`,
+    connection.query(`UPDATE tour_activities SET title = '${activity.title}', description = '${activity.desc}', fee_per_hour = '${activity.fee_per_hour}', media_url = '${activity.media_url}' WHERE activity_id = '${req.params.activityID}'`,
 
       function (error, results, fields) {
 
@@ -105,15 +114,14 @@ const updateActivity = async (req, res) => {
 };
 
 
-// TOUR GUDE DELETION CONTROLLER
+
 const deleteActivity = async (req, res) => {
 
-  var activity = req.body;
-  console.log(activity);
+  console.log(req.user);
 
   try {
 
-    connection.query(`DELETE FROM tour_activities WHERE activity_id = '${activity.activity_id}'`,
+    connection.query(`DELETE FROM tour_activities WHERE activity_id = '${req.params.activityID}'`,
 
       function (error, results, fields) {
 
@@ -138,5 +146,5 @@ const deleteActivity = async (req, res) => {
 }
 
 
-module.exports = { getActivities, getActivity, createActivity, updateActivity, deleteActivity };
 
+module.exports = { getActivities, getActivity, createActivity, updateActivity, deleteActivity };

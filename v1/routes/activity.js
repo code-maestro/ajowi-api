@@ -7,7 +7,7 @@ const auth = require("../../services/authorize");
 const activityController = require("../../controllers/activity.controller");
 
 
-router.get("/", auth, activityController.getActivities);
+router.get("/", activityController.getActivities);
 
 router.post("/", auth, activityController.createActivity);
 
